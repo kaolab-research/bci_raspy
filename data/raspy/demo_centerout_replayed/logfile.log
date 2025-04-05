@@ -1,0 +1,171 @@
+['main/main2b.py', 'replay_demo', '--data_folder', 'demo_centerout_replayed']
+pid: 24608
+main logger_disk
+main timer
+main recv_gaze_buffer
+main replay_eeg
+  starting logger_disk
+before constructor logger_disk
+opening logger_disk ports
+main decoder_hidden
+  starting timer
+before constructor timer
+after constructor timer
+main kf_clda
+  starting recv_gaze_buffer
+before constructor recv_gaze_buffer
+IP: 127.0.0.1
+after constructor recv_gaze_buffer
+before loop recv_gaze_buffer
+main SJ_4_directions
+  starting replay
+before constructor replay
+after constructor replay
+main logger
+  starting decoder_hidden
+before constructor decoder_hidden
+trigger logger_disk
+trigger timer
+trigger replay_eeg
+before loop timer
+before loop replay
+  starting kf_clda
+before constructor kf_clda
+warning: refit_mode 'split'
+Warning: using initial EBS of 3489.099891504375 corresponding to 180.0 seconds
+warning: continuous update OFF
+warning: continuous update is still OFF
+Kalman Filter model loaded!
+M1 M2 updated!
+warning: queue_length 0
+after constructor kf_clda
+before loop kf_clda
+  starting kf_4_directions
+before constructor kf_4_directions
+  starting logger
+before constructor logger
+  task dtype <i8,|i1,<f4,<f4,<f4,<f4,|i1,<f4,<f4,|i1,|b1,|b1,<f4,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f4,<f4,<f4,<f4,<f4,|b1,|b1,<f4,|i1,<f4,<f4,<f4,<f4,<f4,<f4,<f4,<f4,<i4,|i1,<i4,<i4,<i8$(1,),(1,),(5,),(2,),(2,),(2,),(1,),(7,),(7,),(1,),(1,),(1,),(16,),(7, 7),(16, 7),(16, 16),(16, 16),(1,),(16, 7),(16, 16),(16, 16),(7, 7),(7, 16),(7, 7),(7, 16),(2,),(4,),(1,),(1,),(2,),(1,),(1,),(1,),(2,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(),(),(),13238 bytes
+  task labels timer_tick_time_ns,state_task,decoder_output,decoded_pos,target_pos,target_size,game_state,kf_state,kf_inf_state,kf_update_flag,allow_kf_adapt,allow_kf_sync,decoder_h,kf_R,kf_S,kf_T,kf_Tinv,kf_EBS,kf_C,kf_Q,kf_Qinv,kf_S_k,kf_K_k,kf_M1,kf_M2,kf_effective_vel,kf_ole_rlud,sessionLength,activeLength,cursorVel,ignoreWrongTarget,cursorMoveInCorretDirectionOnly,assistValue,assistMode,softmaxThres,holdTimeThres,kfCopilotAlpha,hitRate,missRate,timeoutRate,trialCount,render_angle,numCompletedBlocks,enableKfSyncInternal,eeg_step,gaze_step,time_ns
+  eeg dtype <f4,<f4,<i4,<i4,<i8$(66,),(66,),(),(),(),544 bytes
+  eeg labels eegbuffersignal,databuffer,task_step,gaze_step,time_ns
+  gaze dtype <f8,<i4,<i4,<i8$(32,),(),(),(),272 bytes
+  gaze labels gaze_buffer,task_step,eeg_step,time_ns
+    attempting to connect to: local task
+task  len header  999
+    successfully connected to: task
+pygame 2.5.2 (SDL 2.28.3, Python 3.10.13)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+    attempting to connect to: local eeg
+eeg  len header  100
+    successfully connected to: eeg
+    attempting to connect to: local gaze
+gaze  len header  75
+    successfully connected to: gaze
+logger constructor end
+after constructor logger
+before loop logger
+EEGNet with output dim 4
+after constructor kf_4_directions
+before loop kf_4_directions
+after constructor decoder_hidden
+before loop decoder_hidden
+numCompletedBlocks incremented
+warning: bucket empty
+warning: updated self.yaml_data
+numCompletedBlocks incremented
+warning: set self.enableKfSyncInternal to True
+warning: bucket empty
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+!!! replay Exception: Traceback (most recent call last):
+  File "C:\Users\j\Documents\GitHub\bci_raspy-kc_clean\main\proc2b.py", line 209, in proc
+    this_module.loop()
+  File "C:\Users\j\Documents\GitHub\bci_raspy-kc_clean\main\proc2b.py", line 54, in loop
+    exec(self._loop, self._namespace)
+  File "C:\Users\j\Documents\GitHub\bci_raspy-kc_clean/modules/replay.py", line 27, in <module>
+    v[write_idxs, :] = v[write_idxs - N, :] = data[stream_name][vname][load_idxs]
+IndexError: index 169576 is out of bounds for axis 0 with size 169576
+
+!!! decoder_hidden Exception: quit by trigger
+  Exiting replay
+!!! kf_clda Exception: quit by trigger
+  Exiting decoder_hidden
+    Destructing kf_clda
+!!! kf_4_directions Exception: quit by trigger
+    Destructing kf_4_directions
+!!! logger Exception: quit by trigger
+    Destructing logger
+BEGIN README CONTENTS
+session                          : demo_centerout_replayed
+sessionLength (minutes)          : 10.0
+actual session time (seconds)    : 169.4445445537567
+actual session time (minutes)    : 2.824075742562612
+Task                             : 2D center out 8
+Target info                      : [array([-0.700, 0.000]), array([0.600, 0.600])]
+Decoder path                     : data/raspy/trained_models/CL_H1
+Decoder fold                     : 0
+kf_init_path                     : data/raspy/trained_models/CL_H1/0_kf.npz
+Number of hits                   : 17
+trialCount                       : 22
+hitRate/trialCount               : 0.7727272727272727
+trials/minute*(10 minutes)       : 88.32707837823968
+Index of difficulty              : 1.1154772174199359
+Out hit, incorrect, timeout      : 9, 0, 2
+Out time                         : 96.68835711479187
+kfCopilotAlpha (1.0: no copilot) : 1.0
+
+Additional Notes:
+
+END README CONTENTS
+!!! timer Exception: quit by trigger
+  Exiting kf_clda
+  Exiting logger
+  Exiting kf_4_directions
+    Destructing timer
+!!! recv_gaze_buffer Exception: quit by trigger
+timer exiting: 0 total timing violations
+    Destructing recv_gaze_buffer
+  Exiting timer
+  Exiting recv_gaze_buffer
+logger_disk Exception: client closed connection
+####logger_disk: saved to data/raspy/demo_centerout_replayed/
+    task : 46307523 bytes ,header_len 999 ,
+header:
+task
+timer_tick_time_ns,state_task,decoder_output,decoded_pos,target_pos,target_size,game_state,kf_state,kf_inf_state,kf_update_flag,allow_kf_adapt,allow_kf_sync,decoder_h,kf_R,kf_S,kf_T,kf_Tinv,kf_EBS,kf_C,kf_Q,kf_Qinv,kf_S_k,kf_K_k,kf_M1,kf_M2,kf_effective_vel,kf_ole_rlud,sessionLength,activeLength,cursorVel,ignoreWrongTarget,cursorMoveInCorretDirectionOnly,assistValue,assistMode,softmaxThres,holdTimeThres,kfCopilotAlpha,hitRate,missRate,timeoutRate,trialCount,render_angle,numCompletedBlocks,enableKfSyncInternal,eeg_step,gaze_step,time_ns
+<i8,|i1,<f4,<f4,<f4,<f4,|i1,<f4,<f4,|i1,|b1,|b1,<f4,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f4,<f4,<f4,<f4,<f4,|b1,|b1,<f4,|i1,<f4,<f4,<f4,<f4,<f4,<f4,<f4,<f4,<i4,|i1,<i4,<i4,<i8$(1,),(1,),(5,),(2,),(2,),(2,),(1,),(7,),(7,),(1,),(1,),(1,),(16,),(7, 7),(16, 7),(16, 16),(16, 16),(1,),(16, 7),(16, 16),(16, 16),(7, 7),(7, 16),(7, 7),(7, 16),(2,),(4,),(1,),(1,),(2,),(1,),(1,),(1,),(2,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(),(),()
+
+    eeg : 92223876 bytes ,header_len 100 ,
+header:
+eeg
+eegbuffersignal,databuffer,task_step,gaze_step,time_ns
+<f4,<f4,<i4,<i4,<i8$(66,),(66,),(),(),()
+
+    gaze : 75 bytes ,header_len 75 ,
+header:
+gaze
+gaze_buffer,task_step,eeg_step,time_ns
+<f8,<i4,<i4,<i8$(32,),(),(),()
+
+after constructor logger_disk
+before loop logger_disk
+  Exiting logger_disk
+main: timer triggered quit
+!!! main Exception: someone quit
+sending trigger quit for: logger_disk
+sending trigger quit for: timer
+sending trigger quit for: replay_eeg
+Begin termination of modules:
+    Joined: logger_disk
+    Joined: timer
+    Joined: recv_gaze_buffer
+    Joined: replay_eeg
+    Terminated: decoder_hidden
+    Joined: kf_clda
+    Terminated: SJ_4_directions
+    Joined: logger
+  Exiting main

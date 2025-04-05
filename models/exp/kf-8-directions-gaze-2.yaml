@@ -1,0 +1,625 @@
+paths_to_copy:
+  - ./main
+  - ./modules/kf_util.py
+signals:
+  timer_tick_time_ns:
+    shape: 1
+    dtype: int64
+  decoded_pos:
+    shape: 2
+    dtype: float32
+  target_pos:
+    shape: 2
+    dtype: float32
+  target_size:
+    shape: 2
+    dtype: float32
+  state_task:
+    shape: 1
+    dtype: int8
+  game_state:
+    shape: 1
+    dtype: int8
+  eegbuffersignal:
+    shape: (10000, 66)
+    dtype: float32
+  databuffer:
+    shape: (10000, 66)
+    dtype: float32
+  eegbufferindex:
+    shape: 1
+    dtype: int16
+  v_decoded:
+    shape: 2
+    dtype: float32
+  decoder_output:
+    shape: 5
+    dtype: float32
+  kf_state:
+    shape: (7,)
+    dtype: float32
+  kf_inf_state:
+    shape: (7,)
+    dtype: float32
+  decoder_h:
+    shape: 16
+    dtype: float32
+  kf_R:
+    shape: (7, 7)
+    dtype: float64
+  kf_S:
+    shape: (16, 7)
+    dtype: float64
+  kf_T:
+    shape: (16, 16)
+    dtype: float64
+  kf_Tinv:
+    shape: (16, 16)
+    dtype: float64
+  kf_EBS:
+    shape: 1
+    dtype: float64
+  kf_C:
+    shape: (16, 7)
+    dtype: float64
+  kf_Q:
+    shape: (16, 16)
+    dtype: float64
+  kf_Qinv:
+    shape: (16, 16)
+    dtype: float64
+  kf_S_k:
+    shape: (7, 7)
+    dtype: float64
+  kf_K_k:
+    shape: (7, 16)
+    dtype: float64
+  kf_M1:
+    shape: (7, 7)
+    dtype: float64
+  kf_M2:
+    shape: (7, 16)
+    dtype: float64
+  kf_effective_vel:
+    shape: (2,)
+    dtype: float32
+  kf_ole_rlud:
+    shape: (4,)
+    dtype: float32
+  rluds_output:
+    shape: (5,)
+    dtype: float32
+  kf_update_flag:
+    shape: 1
+    dtype: int8
+  allow_kf_adapt:
+    shape: 1
+    dtype: bool
+  allow_kf_sync:
+    shape: 1
+    dtype: bool
+  shared_last_layer_w:
+    shape: (4, 48)
+    dtype: float32
+  shared_last_layer_b:
+    shape: 4
+    dtype: float32
+  updated_weights_ready:
+    shape: 1
+    dtype: bool
+  reload:
+    shape: 1
+    dtype: bool
+  numEEGSamples:
+    shape: 1
+    dtype: int16
+  totalValidEEGSamples:
+    shape: 1
+    dtype: int64
+  sessionLength:
+    shape: 1
+    dtype: float32
+  activeLength:
+    shape: 1
+    dtype: float32
+  cursorVel:
+    shape: 2
+    dtype: float32
+  ignoreWrongTarget:
+    shape: 1
+    dtype: bool
+  cursorMoveInCorretDirectionOnly:
+    shape: 1
+    dtype: bool
+  assistValue:
+    shape: 1
+    dtype: float32
+  assistMode:
+    shape: 2
+    dtype: int8
+  softmaxThres:
+    shape: 1
+    dtype: float32
+  holdTimeThres:
+    shape: 1
+    dtype: float32
+  kfCopilotAlpha:
+    shape: 1
+    dtype: float32
+  hitRate:
+    shape: 1
+    dtype: float32
+  missRate:
+    shape: 1
+    dtype: float32
+  timeoutRate:
+    shape: 1
+    dtype: float32
+  trialCount:
+    shape: 1
+    dtype: float32
+  render_angle:
+    shape: 1
+    dtype: float32
+  numCompletedBlocks:
+    shape: 1
+    dtype: int32
+  enableKfSyncInternal:
+    shape: 1
+    dtype: int8
+  gaze_buffer:
+    shape: (600, 32)
+    dtype: float64
+  gaze_buffer_idx:
+    shape: 1
+    dtype: int16
+group_params:
+  dt_group:
+    modules:
+      - timer
+      - kf_clda
+      - SJ_4_directions
+    params:
+      dt: 50000
+modules:
+  logger_disk:
+    constructor: true
+    destructor: false
+    loop: false
+    params:
+      save_path: /home/necl-eeg/data/raspy/
+      connections:
+        local:
+          task:
+            IP: 127.0.0.1
+            PORT: 7701
+          eeg:
+            IP: 127.0.0.1
+            PORT: 7702
+          gaze:
+            IP: 127.0.0.1
+            PORT: 7703
+  timer:
+    constructor: true
+    destructor: true
+    sync:
+      - logger
+    trigger: true
+    out:
+      - timer_tick_time_ns
+    params:
+      timer_type: hybrid
+      verbose: true
+  recv_gaze_buffer:
+    constructor: true
+    destructor: true
+    sync:
+      - timer
+    out:
+      - gaze_buffer
+      - gaze_buffer_idx
+    trigger: false
+    params:
+      IP: 10.0.1.101
+      PORT: 7780
+  UpdateEEG:
+    constructor: true
+    destructor: true
+    sync:
+      - timer
+    out:
+      - eegbuffersignal
+      - eegbufferindex
+      - numEEGSamples
+      - totalValidEEGSamples
+    trigger: false
+    params:
+      IP: 127.0.0.1
+      PORT: 7779
+  filterEEG:
+    constructor: true
+    destructor: false
+    sync:
+      - UpdateEEG
+    in:
+      - eegbuffersignal
+      - eegbufferindex
+      - numEEGSamples
+      - totalValidEEGSamples
+    out:
+      - databuffer
+  decoder_hidden:
+    constructor: true
+    sync:
+      - filterEEG
+    in:
+      - eegbuffersignal
+      - databuffer
+      - eegbufferindex
+      - state_task
+      - reload
+      - shared_last_layer_w
+      - shared_last_layer_b
+      - updated_weights_ready
+    out:
+      - decoder_output
+      - decoder_h
+      - reload
+    params:
+      path: /home/necl-eeg/data/raspy/trained_models/CL_JL-DRY3
+      fold: 3
+      data_preprocessor:
+        online_status: online
+        normalizer_type: welfords
+  kf_clda:
+    constructor: true
+    destructor: true
+    sync:
+      - decoder_hidden
+    in:
+      - decoder_h
+      - state_task
+      - decoded_pos
+      - target_pos
+      - decoder_output
+      - allow_kf_adapt
+      - allow_kf_sync
+    out:
+      - kf_state
+      - kf_inf_state
+      - rluds_output
+      - kf_update_flag
+      - kf_R
+      - kf_S
+      - kf_T
+      - kf_Tinv
+      - kf_EBS
+      - kf_C
+      - kf_Q
+      - kf_Qinv
+      - kf_S_k
+      - kf_K_k
+      - kf_M1
+      - kf_M2
+      - kf_effective_vel
+      - kf_ole_rlud
+    params:
+      init_EBS_seconds: prev
+      half_life: 2000.0
+      kf_init_path: /home/necl-eeg/data/raspy/2024-08-02_JL-DRY_CL_4/final_kf.npz
+      RLUDs_idx:
+        - 1
+        - 0
+        - 2
+        - 3
+      continuous_update: false
+      A_gain: 0.5
+      inf_state_delay: 0.0
+      refit_mode: split
+  SJ_4_directions:
+    name: kf_4_directions
+    constructor: true
+    destructor: true
+    sync:
+      - kf_clda
+    in:
+      - eegbufferindex
+      - state_task
+      - decoder_output
+      - kf_state
+    out:
+      - decoded_pos
+      - target_pos
+      - target_size
+      - game_state
+      - allow_kf_adapt
+      - allow_kf_sync
+      - kf_ole_rlud
+      - sessionLength
+      - activeLength
+      - cursorVel
+      - ignoreWrongTarget
+      - cursorMoveInCorretDirectionOnly
+      - assistValue
+      - assistMode
+      - softmaxThres
+      - holdTimeThres
+      - kfCopilotAlpha
+      - hitRate
+      - missRate
+      - timeoutRate
+      - trialCount
+      - render_angle
+      - numCompletedBlocks
+      - enableKfSyncInternal
+    params:
+      sessionLength: 600
+      syncLength: 300
+      waitIntegerBlocks: true
+      fullScreen: false
+      screenSize:
+        - 700
+        - 700
+      objScale: 0.001
+      cursorRadius: 10
+      cursorVel:
+        - 0.03
+        - 0.03
+      copilotVel:
+        - 0.015
+        - 0.015
+      ignoreWrongTarget: false
+      cursorMoveInCorretDirectionOnly: false
+      useRandomTargetPos: false
+      centerIn: true
+      enforceCenter: reset
+      resetCursorPos: false
+      randomTargetPosRadius: -1
+      styleChange: true
+      styleChangeBallSize: 1.0
+      styleChangeCursorSize:
+        - 0.1
+        - 0.1
+      targetWrongColor:
+        - 60
+        - 60
+        - 60
+      useCmBoard: false
+      cmBoardDetail:
+        fullSizeScreen: false
+        gameBoardSize:
+          - 20
+          - 20
+        actualScreenSize:
+          - 33
+          - 21
+      useCircleTargets: true
+      targetsInfo:
+        left:
+          - - -0.7
+            - 0
+          - - 0.2
+            - 0.2
+        right:
+          - - 0.7
+            - 0
+          - - 0.2
+            - 0.2
+        up:
+          - - 0
+            - 0.7
+          - - 0.2
+            - 0.2
+        down:
+          - - 0
+            - -0.7
+          - - 0.2
+            - 0.2
+        LU:
+          - - -0.495
+            - 0.495
+          - - 0.2
+            - 0.2
+        LD:
+          - - -0.495
+            - -0.495
+          - - 0.2
+            - 0.2
+        RU:
+          - - 0.495
+            - 0.495
+          - - 0.2
+            - 0.2
+        RD:
+          - - 0.495
+            - -0.495
+          - - 0.2
+            - 0.2
+      defaultTargetSize:
+        - 0.2
+        - 0.2
+      target2state_task:
+        left: 0
+        right: 1
+        up: 2
+        down: 3
+        still: 4
+        LU: 5
+        LD: 6
+        RU: 7
+        RD: 8
+        null: -1
+      decodedVel:
+        0:
+          - -1.0
+          - 0
+        1:
+          - 1.0
+          - 0
+        2:
+          - 0.0
+          - 1
+        3:
+          - 0.0
+          - -1
+        4:
+          - 0.0
+          - 0
+      holdTimeThres: 0.5
+      graceTimeThres: 0.0
+      softmaxThres: 0.5
+      assist: 0.0
+      assistMode: n2
+      inactiveLength: 0
+      delayedLength: 0
+      activeLength: 24
+      calibrationLength: 5
+      skipFirstNtrials: 4
+      numInitialEvaluationBlocks: 1
+      showTextMetrics: null
+      showCountDown: true
+      softmaxStyle: normal
+      showSoftmax: false
+      showHeatmap: false
+      showStats: false
+      showColorCursor: true
+      showPredictedTarget: true
+      showAllTarget: false
+      hideCom: true
+      hideMass: true
+      yamlName: models/exp/kf-8-directions-gaze-2.yaml
+      unused_copilot_path1-0.8LSTM: SJtools/copilot/models/keep/charge/T8B_LSTM2_truedecay/best_model
+      unused_copilot_path2-0.8Traj: SJtools/copilot/models/keep/charge/T8B_temperature1/best_model
+      unused_copilot_path3-0.7LSTM: SJtools/copilot/models/keep/charge/T8B_LSTM2_truedecay_0.7/best_model
+      unused_copilot_path5-0.7Traj: SJtools/copilot/models/keep/charge/T8B_temperature1_0.7/best_model
+      unused_copilot_path4-0.7Traj: SJtools/copilot/models/keep/charge/T8B_temperature0.5_0.7/best_model
+      copilot_kf_state: true
+      kfCopilotAlpha: 1.0
+      enableKfSync: true
+      enableKfAdapt: true
+      enableKfAdaptDelay: 1.0
+      dt: 50000
+  logger:
+    constructor: true
+    destructor: true
+    sync:
+      - SJ_4_directions
+    in:
+      - timer_tick_time_ns
+      - eegbuffersignal
+      - databuffer
+      - eegbufferindex
+      - state_task
+      - decoder_output
+      - decoded_pos
+      - target_pos
+      - target_size
+      - game_state
+      - kf_state
+      - kf_inf_state
+      - kf_update_flag
+      - allow_kf_adapt
+      - allow_kf_sync
+      - decoder_h
+      - kf_R
+      - kf_S
+      - kf_T
+      - kf_Tinv
+      - kf_EBS
+      - kf_C
+      - kf_Q
+      - kf_Qinv
+      - kf_S_k
+      - kf_K_k
+      - kf_M1
+      - kf_M2
+      - kf_effective_vel
+      - kf_ole_rlud
+      - sessionLength
+      - activeLength
+      - cursorVel
+      - ignoreWrongTarget
+      - cursorMoveInCorretDirectionOnly
+      - assistValue
+      - assistMode
+      - softmaxThres
+      - holdTimeThres
+      - kfCopilotAlpha
+      - hitRate
+      - missRate
+      - timeoutRate
+      - trialCount
+      - render_angle
+      - numCompletedBlocks
+      - enableKfSyncInternal
+      - gaze_buffer
+      - gaze_buffer_idx
+    params:
+      log:
+        task:
+          signals:
+            - timer_tick_time_ns
+            - state_task
+            - decoder_output
+            - decoded_pos
+            - target_pos
+            - target_size
+            - game_state
+            - kf_state
+            - kf_inf_state
+            - kf_update_flag
+            - allow_kf_adapt
+            - allow_kf_sync
+            - decoder_h
+            - kf_R
+            - kf_S
+            - kf_T
+            - kf_Tinv
+            - kf_EBS
+            - kf_C
+            - kf_Q
+            - kf_Qinv
+            - kf_S_k
+            - kf_K_k
+            - kf_M1
+            - kf_M2
+            - kf_effective_vel
+            - kf_ole_rlud
+            - sessionLength
+            - activeLength
+            - cursorVel
+            - ignoreWrongTarget
+            - cursorMoveInCorretDirectionOnly
+            - assistValue
+            - assistMode
+            - softmaxThres
+            - holdTimeThres
+            - kfCopilotAlpha
+            - hitRate
+            - missRate
+            - timeoutRate
+            - trialCount
+            - render_angle
+            - numCompletedBlocks
+            - enableKfSyncInternal
+        eeg:
+          index: eegbufferindex
+          buffers:
+            - eegbuffersignal
+            - databuffer
+        gaze:
+          index: gaze_buffer_idx
+          buffers:
+            - gaze_buffer
+      connections:
+        local:
+          task:
+            IP: 127.0.0.1
+            PORT: 7701
+          eeg:
+            IP: 127.0.0.1
+            PORT: 7702
+          gaze:
+            IP: 127.0.0.1
+            PORT: 7703
+std updated: 5.0

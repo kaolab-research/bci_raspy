@@ -1,0 +1,6 @@
+python -m SJtools.copilot.train -model=RecurrentPPO -n_steps=8192 -batch_size=512 -action chargeTargets -action_param temperature 1 -obs targetEnd -holdtime=2.0 -stillCS=0.0 -timesteps=1200000 -lr_scheduler=constant -n_steps=2048 -softmax_type=normal_target -velReplaceSoftmax -no_wandb -reward_type=baseLinDistDecay.yaml -center_out_back -extra_targets_yaml=dir-8.yaml -filePath=./SJtools/copilot/runs/24-01-25_charge/ -fileName=T8B_LSTM2_truedecay
+last model with normal_target softmax: 0.96, 96, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 226.23, 0.89, 1.67
+best model with normal_target softmax: 0.9, 90, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 245.06, 0.98, 1.73
+python -m SJtools.copilot.train -model=RecurrentPPO -n_steps=8192 -batch_size=512 -action chargeTargets -action_param temperature 1 -obs targetEnd -holdtime=2.0 -stillCS=0.0 -timesteps=1200000 -lr_scheduler=constant -n_steps=2048 -softmax_type=normal_target -velReplaceSoftmax -no_wandb -reward_type=baseLinDistDecay.yaml -center_out_back -extra_targets_yaml=dir-8.yaml -filePath=./SJtools/copilot/runs/24-01-25_charge/ -fileName=T8B_LSTM2_truedecay

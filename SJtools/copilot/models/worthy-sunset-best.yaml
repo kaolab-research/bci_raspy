@@ -1,0 +1,22 @@
+copilot:
+  model: PPO
+obs_dim:
+  cursor_target_obs: false
+  history:
+  - 1
+  - 0
+  maskSoftmax: ~
+  obs: []
+  target_predictor: ~
+  obs_heatmap_option: []
+  target_predictor: null
+  target_predictor_input: softmax
+action_dim:
+  action:
+  - vx
+  - vy
+  - alpha
+  alpha: 1.0
+targets:
+  extra_targets: {}
+  extra_targets_yaml: ~

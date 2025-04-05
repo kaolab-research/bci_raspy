@@ -1,0 +1,19 @@
+wrong_penalty:
+  start: 0
+  end: -10000
+  step: 1000
+  req_trials: 10
+  req_success: 1.0
+tolerated_wrong_penalty:
+  start: 0
+  end: -10000
+  step: 1000
+  req_trials: 10
+  req_success: 1.0
+wrong_tolerance:
+  start: 4
+  end: 0
+  step: 1
+  req_trials: 10
+  req_success: 1.0
+

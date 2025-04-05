@@ -1,0 +1,14 @@
+dwell_time:
+  start: 3
+  end: 0.5
+  step: 1.0
+  req_trials: 10
+  req_success: 1.0
+hold_time:
+  start: 0.5
+  end: 1.0
+  step: 0.1
+  req_trials: 10
+  req_success: 1.0
+
+# available attributes are: target_size, hold_time, dwell_time

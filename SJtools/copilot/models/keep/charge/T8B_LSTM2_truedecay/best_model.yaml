@@ -1,0 +1,36 @@
+action_dim:
+  action:
+  - chargeTargets
+  action_param:
+    temperature: '1'
+  alpha: null
+copilot:
+  model: RecurrentPPO
+  net_arch:
+  - pi:
+    - 64
+    - 64
+    vf:
+    - 64
+    - 64
+  policy: null
+obs_dim:
+  cursor_target_obs: false
+  heatmap: null
+  history:
+  - 1
+  - 0
+  historyReset: zero
+  maskSoftmax: null
+  noSoftmax: false
+  obs:
+  - targetEnd
+  obs_heatmap_option: []
+  target_predictor: null
+  target_predictor_input: softmax
+  velReplaceSoftmax: true
+reset:
+  trial_per_episode: 1
+targets:
+  extra_targets: {}
+  extra_targets_yaml: dir-8.yaml

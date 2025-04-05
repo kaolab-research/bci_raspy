@@ -1,0 +1,14 @@
+*.pt
+*.pyc
+__pycache__
+.ipynb_checkpoints/
+runs/
+nohup.out
+pipeline_combined_prepro.py
+pipeline_to_test_split_ds.py
+mean_std.png
+wandb/
+results/
+results/
+creating_initial_EEGNet_and_dataset_dbs.ipynb
+testing_riemann_model.ipynb

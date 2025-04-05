@@ -1,0 +1,6 @@
+python -m SJtools.copilot.train -model=PPO -alpha=1 -extra_targets_yaml=dir-8-o.yaml -holdtime=2.0 -timesteps=600000 -lr_scheduler=constant -n_steps=2048 -softmax_type=two_peak -stillCS=0.0 -obs_heatmap 10 -obs_heatmap_option bcc com df0.99 -obs hold vel acc time -history 3 10 -no_wandb -reward_type=baseLinAngle.yaml
+last model with complex softmax: 0.83, 83, 100
+last model with two_peak softmax: 0.69, 69, 100
+best model with complex softmax: 0.71, 71, 100
+best model with two_peak softmax: 0.78, 78, 100
+python -m SJtools.copilot.train -model=PPO -alpha=1 -extra_targets_yaml=dir-8-o.yaml -holdtime=2.0 -timesteps=600000 -lr_scheduler=constant -n_steps=2048 -softmax_type=two_peak -stillCS=0.0 -obs_heatmap 10 -obs_heatmap_option bcc com df0.99 -obs hold vel acc time -history 3 10 -no_wandb -reward_type=baseLinAngle.yaml

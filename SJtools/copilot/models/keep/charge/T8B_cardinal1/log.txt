@@ -1,0 +1,6 @@
+python -m SJtools.copilot.train -model=PPO -policy_param_p 64 64 64 -policy_param_v 64 64 64 -action chargeTargets -action_param temperature 1 -holdtime=2.0 -stillCS=0.0 -timesteps=1200000 -lr_scheduler=constant -n_steps=2048 -softmax_type=normal_target -velReplaceSoftmax -cardinalVelocityThres 0.0 -no_wandb -reward_type=baseLinDist.yaml -center_out_back -history 5 20 pos -historyReset last -extra_targets_yaml=dir-8.yaml -filePath=./SJtools/copilot/runs/24-01-25_charge/ -fileName=T8B_cardinal1
+last model with normal_target softmax: 0.51, 51, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 263.97, 0.28, 0.72
+best model with normal_target softmax: 0.5, 50, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 266.57, 0.44, 0.89
+python -m SJtools.copilot.train -model=PPO -policy_param_p 64 64 64 -policy_param_v 64 64 64 -action chargeTargets -action_param temperature 1 -holdtime=2.0 -stillCS=0.0 -timesteps=1200000 -lr_scheduler=constant -n_steps=2048 -softmax_type=normal_target -velReplaceSoftmax -cardinalVelocityThres 0.0 -no_wandb -reward_type=baseLinDist.yaml -center_out_back -history 5 20 pos -historyReset last -extra_targets_yaml=dir-8.yaml -filePath=./SJtools/copilot/runs/24-01-25_charge/ -fileName=T8B_cardinal1

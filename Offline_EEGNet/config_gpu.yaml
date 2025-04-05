@@ -1,0 +1,291 @@
+# ============================================
+# ====  Parameters for Basic Information  ====
+# ============================================
+
+# Must be run from Offline_EEGNet directory due to relative paths.
+data_dir:  ../data/raspy/                          # path to data pool.
+model_dir:  ../data/raspy/trained_models/          # path to store trained models.
+h5_dir: ../data/raspy/preprocessed_data/          # path to store preprocessed data.
+model_arch_dir: ./EEGNet.py
+
+data_names:
+  - demo_decorr
+data_kinds:
+  - OL
+train_on_server: False                           # if set to False, please change data_dir, model_dir, h5_dir correspondingly to your local paths.
+device_id:
+  #- cpu
+  - 0
+random_seed: ~
+
+# ============================================
+# ======  Parameters for Preprocessing  ======
+# ============================================
+
+data_preprocessor:
+  eeg_cap_type: gel64               # from 'gel64', 'dry64', or 'saline64'.
+  sampling_frequency: 1000          # sampling frequency. Data recorded with ANT EEGO is 1000 Hz by default.
+  ch_to_drop:                       # channel names we want to drop.
+    - TRGR
+    - COUNT
+    - M1
+    - M2
+    - EOG
+    - Fp1 # row 1
+    - Fpz # row 1
+    - Fp2 # row 1
+    # - AF7 # row 2
+    # - AF3 # row 2
+    # - AF4 # row 2
+    # - AF8 # row 2
+    #- F7 # row 3
+    #- F8 # row 3
+    #- F5 # row 3
+    #- F6 # row 3
+    #- F3 # row 3
+    #- F1 # row 3
+    #- Fz # row 3
+    #- F2 # row 3
+    #- F4 # row 3
+    #- FT7 # row 4
+    #- FC5 # row 4
+    #- FC3 # row 4
+    #- FC1 # row 4
+    #- FCz # row 4
+    #- FC2 # row 4
+    #- FC4 # row 4
+    #- FC6 # row 4
+    #- FT8 # row 4
+    #- T7 # row 5
+    #- C5 # row 5
+    #- C3 # row 5
+    #- C1 # row 5
+    #- Cz # row 5
+    #- C2 # row 5
+    #- C4 # row 5
+    #- C6 # row 5
+    #- T8 # row 5
+    #- TP7 # row 6
+    #- CP5 # row 6
+    #- CP3 # row 6
+    #- CP1 # row 6
+    #- CP2 # row 6
+    #- CP4 # row 6
+    #- CP6 # row 6
+    #- TP8 # row 6
+    #- P7 # row 7
+    #- P5 # row 7
+    #- P3 # row 7
+    #- P1 # row 7
+    #- Pz # row 7
+    #- P2 # row 7
+    #- P4 # row 7
+    #- P6 # row 7
+    #- P8 # row 7
+    #- PO7 # row 8
+    #- PO5 # row 8
+    #- PO3 # row 8
+    #- POz # row 8
+    #- PO4 # row 8
+    #- PO6 # row 8
+    #- PO8 # row 8
+    #- O1 # row 9
+    #- Oz # row 9
+    #- O2 # row 9
+
+  online_status: offline
+  normalizer_type: welfords         # If online experiment can be welfords or running_mean. Offline experiment_type ignores this setting
+  bandpass_filter:
+    apply: False                    # whether bandpass filter is needed. (applied internally by raspy, setting it true will apply it second time)
+    lowcut: 4                       # the low pass band.
+    highcut: 40                     # the high pass band.
+    order: 3                        # the order of the filter.
+  zero_center: False
+    
+labeling:
+  labels_to_keep:
+    - all
+  relabel_pairs:                    # used to simulate when tasks are remapped during closed loop experiments. For instance, in a closed loop experiment if the mental math task was used to move the cursor right in bci_raspy settings the label for that task in the closed loop data would be a 1 (the usual label for left), while in the training data it would be a 4 (the usual label for math). To correct for this, pass 1, 4 into relabel pairs, so that task labels of 1 in the test dataset will be reassigned to be 4 (to match the corresponding training data).
+    - ~                             
+
+artifact_handling:
+  detect_artifacts: False            # Whether to detect and discard artifacts
+  reject_std: 5.5                   # number of standard deviations to allow each channel to vary by. If any data points in a window exceed this threshold, the window will be marked as containing an artifact.
+
+dataset_generator:
+  # SEE USAGE EXAMPLES BELOW
+  dataset_operation:
+    relabel: False        # if False, check selected_labels to select a subset of labels; if True, check mapped_labels to tell it how you want to relabel it.
+    selected_labels:
+      - 0
+      - 1
+      - 2
+      - 3
+    mapped_labels:
+      class0:
+        - 0
+      class1:
+        - 2
+      class2:
+        - 3
+      class3:
+        - 3
+
+  first_ms_to_drop: 1000                      # time in ms dropped from each trial which has less useful information at the beginning.
+  window_length: &window_length_ 1000         # the time window in ms of data in each step during training. This is used to remove trials that are too short.
+  omit_angles: 10
+
+partition:
+  num_folds: &num_folds_ 5                    # the number of fold in k-fold validation.
+
+augmentation:
+  window_length: *window_length_              # the time window of data in each step during training.
+  stride: 99                                  # the stride of the window to slide.
+  new_sampling_frequency: &new_s_f_ 100       # the sampling frequency to downsample to for 1s data.
+  num_noise: 4                                # the number of noise windows to add to one original data window.
+
+
+# ========== Usage Example ==========
+#   relabel: bool
+#     If True, check mapped_labels.
+#               It will relabel labels based on what assigned in mapped_labels.
+#     If False, check selected_labels.
+#               That means no label needs to be adjusted. Follow the original labels in data and do classification. 
+#               It supports to select a subset of all labels by selected_labels. If using all labels, make sure you set it to cover all labels.
+#               For multiple data inputs, it will combine data with the same label from all datasets.
+
+#   selected_labels:
+#     a list of labels you want to use. For example, you have a five-class dataset and only want to use left (0) and right (1) from it. Then set it to be:
+#       selected_labels:
+#         - 0
+#         - 1
+#     If you want to train on all five classes, set it to be:
+#       selected_labels:
+#         - 0
+#         - 1
+#         - 2
+#         - 3
+#         - 4
+#     If you only want to train on uncontinuous labels, e.g. 0 and 4, set relabel to be True and use mapped_labels.
+
+#   mapped_labels: dict
+#     'classX' is one class from the model output. The number of 'classX' is the number of classes your model will be trained on.
+#     'classX' is a list. The number of elements should equal the number of datasets you input in data_names. Each element represents the original label you want to relabel to this class X.
+#     If the data folder has nothing to contribute to this class, mark as ~ (which is None in yaml).
+#     See examples:
+#       ----------
+#       Example 1: Train on two data with same labels to have more data: (left:0, right:1), (left:0, right:1)
+#         relabel: False
+#         selected_labels:
+#           - 0
+#           - 1
+#         mapped_labels: (you can leave anything here since the script won't check as long as relabel is False)
+#       ----------
+#       Example 2: Train on two data, each of which contains part of data: (left:0, right:1), (sing:3, subtract:4)
+#         relabel: True
+#         selected_labels: (you can leave anything here since the script won't check as long as relabel is True)
+#         mapped_labels:
+#           class0:
+#             - 0
+#             - ~
+#           class1:
+#             - 1
+#             - ~
+#           class2:
+#             - ~
+#             - 3
+#           class3:
+#             - ~
+#             - 4
+#       ----------
+#       Example 3: Train on three data, each of which contains same labels, but here we want to check the difference between the left trials from the first and the second dataset. 
+#                   So we treat them as different classes: (left:0, right:1), (left:0, right:1).
+#         relabel: True
+#         selected_labels: (you can leave anything here since the script won't check as long as relabel is True)
+#         mapped_labels:
+#           class0:
+#             - 0
+#             - ~
+#             - ~
+#           class1:
+#             - ~
+#             - 0
+#             - ~
+#           class2:
+#             - ~
+#             - ~
+#             - 0
+# ===================================
+
+
+
+# ============================================
+# ========  Parameters for Raspy    ==========
+# ============================================
+
+#PICK UP WORK HERE NEED TO UNIFY WITH RASPY CONFIG FILE 
+
+
+
+# ============================================
+# ========  Parameters for Training   ========
+# ============================================
+
+training:
+  num_folds: *num_folds_
+
+  max_epochs: 500
+  patience: 100
+  mode: max
+  save_top_k: 10
+  save_last: true
+
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  eps: 0.001
+  loss_func: OneHotMSE
+  class_weight: balanced
+
+  # for dataloader
+  train_batch_size: 32
+  train_shuffle: True
+  train_drop_last: False
+  train_num_workers: 0
+  train_prefetch_factor: 4
+  val_batch_size: 32
+  val_shuffle: True
+  val_drop_last: False
+  val_num_workers: 0
+  val_prefetch_factor: 4
+
+# ============================================
+# =========  Parameters for EEGNet  ==========
+# ============================================
+
+model:
+  num_temporal_filters: 8
+  num_spatial_filters: 2
+  window_length: *window_length_
+  sampling_frequency: *new_s_f_
+
+  block1:
+    # Conv2D layer
+    conv: [1, 51]
+    # DepthwiseConv2D layer
+    max_norm_value: 1
+    eps: 0.01
+    # AveragePool2D layer
+    avg_pool: [1, 3]
+    # Dropout layer
+    dropout: 0.5
+
+  block2:
+    # SeparableConv2D
+    sep_conv: [1, 16]                   # set to 8 if window_length < 1000
+    # AveragePool2D layer
+    avg_pool: [1, 16]                   # set to 4 if window_length < 1000; 1 if < 500.
+    # Dropout layer
+    dropout: 0.5
+    # Dense
+    max_norm_value: 0.25
+    eps: 0.01

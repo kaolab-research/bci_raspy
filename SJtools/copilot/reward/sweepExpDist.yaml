@@ -1,0 +1,15 @@
+game_state:
+  T: 0 # time out
+  H: 100 # hit
+  W: -100 # wrong hit
+  t: 0
+  lower: 0 # n,h,w
+bonus_param: {}
+#   subtracted_hold: 100
+shaping: exp_dist
+reward_weight: # how much to weigh each reward
+  game_state: 1
+#   subtracted_hold: 1
+  shaping: 1
+# legacy: True
+

@@ -1,0 +1,7 @@
+hyperparameters:
+  hidden_dim: 32
+  input_dim: 7
+  num_layers: 5
+  output_dim: 2
+model: LSTM_POS1
+path: ./SJtools/copilot/targetPredictor/models/LSTM_S_CXY_vjb_LSTM_POS1.pt

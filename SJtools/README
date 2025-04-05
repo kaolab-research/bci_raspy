@@ -1,0 +1,29 @@
+## SJ guideline on using bci raspy:
+
+How to run:
+python -m SJtools.copilot.train
+python -m SJtools.copilot.test modelName
+
+train examples:
+python -m SJtools.copilot.train -model=RecurrentPPO -batch_size=512 -action chargeTargets -action_param temperature 1 -obs targetEnd -holdtime=2.0 -stillCS=0.0 -timesteps=1200000 -lr_scheduler=constant -n_steps=2048 -softmax_type=normal_target -velReplaceSoftmax -no_wandb -reward_type=baseLinDistDecay.yaml -center_out_back -extra_targets_yaml=dir-8-close.yaml -filePath=./SJtools/copilot/runs/24-02-18_close_charge/ -fileName=T8B_LSTM2_truedecay_0.7_3
+python -m SJtools.copilot.train -model=PPO -action chargeTargets -action_param temperature 1 K 0.3 -holdtime=2.0 -stillCS=0.0 -timesteps=1200000 -lr_scheduler=constant -n_steps=2048 -softmax_type=normal_target -velReplaceSoftmax -no_wandb -reward_type=baseLinDist.yaml -center_out_back -history 5 20 pos -historyReset last -extra_targets_yaml=dir-8-close.yaml -policy_param_p 64 64 64 -policy_param_v 64 64 64 -filePath=./SJtools/copilot/runs/24-02-18_close_charge/ -fileName=T8B_K0.1_0.7
+
+run.py exists to run multiple training curriculum at once:
+you can open up multiple terminals and run to simultaneously train
+python -m SJtools.copilot.run -file=run.sh
+python -m SJtools.copilot.run -file=run.sh
+python -m SJtools.copilot.run -file=run.sh
+
+to see training in real time add flag -renderTrain or -renderEval
+python -m SJtools.copilot.train -softmax_type=normal_target -renderTrain 
+python -m SJtools.copilot.train -softmax_type=normal_target -renderEval
+
+to see surrogate human control policy add flag -showVelocity
+python -m SJtools.copilot.train -softmax_type=normal_target -renderTrain -showVelocity
+
+test examples:
+python -m SJtools.copilot.test models/keep/now-4bfu6m9l4l-8-cb/best_model -center_out_back
+python -m SJtools.copilot.test models/keep/charge/T8B_LSTM2_truedecay/last_model -center_out_back
+
+- to see in real time add flag -use_realtime 1
+- to be able to pause add flag -pause and press 'enter' key to move one step at a time

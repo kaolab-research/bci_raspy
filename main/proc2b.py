@@ -1,0 +1,245 @@
+# import argparse # Not used currently. May be useful.
+import multiprocessing as mp
+import multiprocessing.shared_memory
+import util2b as util
+import numpy as np
+import traceback
+import sys
+import platform
+import os
+os.system('') # enables colors in windows for some reason
+import re
+ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+
+class RaspyModule():
+    '''
+    Class which compiles and runs the constructor, loop, and destructor components for each module.
+    '''
+    def __init__(self, constructor_fname, loop_fname, destructor_fname, signals, module, shm_names):
+        # signals: dict of info for shared memory
+        #   each item is a dictionary with shape and dtype
+        #   e.g. signals['var_name'] = {'shape': (3, 2), 'dtype': 'float64'}
+        # module: dict of info for the relevant module
+        #   Union of module['in'] and module['out'] yields a set of shared memory variable names
+        # shm_pid: used for referencing shared memory objects, and is used as a _suffix. If None, then no suffix is added.
+        if constructor_fname is not None:
+            with open(constructor_fname, 'r') as f:
+                self._constructor = compile(f.read(), constructor_fname, 'exec')
+        else:
+            self._constructor = None
+        if loop_fname is not None:
+            with open(loop_fname, 'r') as f:
+                self._loop = compile(f.read(), loop_fname, 'exec')
+        else:
+            self._loop = None
+        if destructor_fname is not None:
+            with open(destructor_fname, 'r') as f:
+                self._destructor = compile(f.read(), destructor_fname, 'exec')
+        else:
+            self._destructor = None
+        self._namespace = {}
+        self.destructed = False
+        
+        self.shm_names = shm_names
+        self.shm_setup(signals, module, shm_names)
+        return
+    def constructor(self):
+        if self._constructor is not None:
+            exec(self._constructor, self._namespace)
+        else:
+            return False
+        return True
+    def loop(self):
+        if self._loop is not None:
+            exec(self._loop, self._namespace)
+        else:
+            return False
+        return True
+    def destructor(self):
+        self.destructed = True
+        if self._destructor is not None:
+            exec(self._destructor, self._namespace)
+        else:
+            return False
+        return True
+    def shm_setup(self, signals, module, shm_names):
+        self.m_shm = util.shm_setup(signals, module, shm_names) # Shared memory setup
+        for key, value in self.m_shm.items():
+            if key[0] != '_':
+                self._namespace[key] = value # Assign numpy arrays to namespace self._namespace
+        self._namespace['params'] = module['params'] if ('params' in module) else {}
+        return
+    def shm_close(self):
+        for key, value in self.m_shm.items():
+            if key[0] == '_':
+                self.m_shm[key].close()
+        return
+    def shm_unlink(self):
+        for key, value in self.m_shm.items():
+            if key[0] == '_':
+                self.m_shm[key].unlink()
+        return
+    def __del__(self):
+        if not self.destructed:
+            self.destructor()
+        return
+    def assign_to_namespace(self, items_dict):
+        # items_dict should be a dict
+        # This function exists if needed but is not recommended generally.
+        for key, item in items_dict.items():
+            self._namespace[key] = item
+        return
+
+def proc(signals, module, p_in: list, p_out: list, trigger=None, log_queue=None, shm_names=None,
+        timeout=60.0, loop_timeout=10.0):
+    '''
+    function for maintaing raspy processes and communicated with upstream process.
+    Will probably malfunction if used outside of main due to shm_pid assignment when creating RaspyModule instance.
+    '''
+    # signals: dictionary containing information about the signals
+    # module: dictionary containing information about the current module
+    # p_in and p_out: Connection objects (created using mp.Pipe). Only for sync'ed processes
+    # trigger: pipe to main if not None
+    # log_queue mp.Queue object to add print output to.
+    # timeout: time to wait for upstream messages for the first&second loop. Needs to be longer than expected dt.
+    # loop_timeout: time to wait for upstream messages for subsequent loops. Needs to be longer than expected dt.
+    
+    data_folder = module['params']['data_folder']
+    if log_queue is not None and platform.system() == 'Windows': # for Windows only. Due to fork/spawn differences
+        log_filename = data_folder + 'logfile.log'
+        # class which captures print output. Writes to terminal and puts to log_queue
+        class Logger(object):
+            def __init__(self):
+                self.terminal = sys.stdout # Get and save (a reference to) the original stdout/print stream.
+
+            def write(self, message):
+                if 'warning' == message[0:7].lower():
+                    message = util.color_str(message, (255, 255, 0))
+                self.terminal.write(message) # Actually print the stdout message.
+                message = ansi_escape.sub('', message) # remove ANSI color codes
+                log_queue.put(message) # Add the message to the queue.
+
+            def flush(self):
+                #this flush method is needed for python 3 compatibility.
+                #this handles the flush command by doing nothing.
+                #you might want to specify some extra behavior here.
+                pass
+        sys.stdout = Logger()
+    
+    print('  starting {}'.format(module['name']))
+    
+    # Find constructor, loop, destructor filenames
+    if 'constructor' in module and module['constructor']:
+        constructor_fname = module['path'] + '_constructor.py'
+    else:
+        constructor_fname = None
+    if 'destructor' in module and module['destructor']: # Get destructor (if required) for future execution
+        destructor_fname = module['path'] + '_destructor.py'
+    else:
+        destructor_fname = None
+    
+    use_loop = module['loop'] if 'loop' in module else True # Whether this modules uses a loop. Defaults to True.
+    if use_loop:
+        loop_fname = module['path'] + '.py'
+    else:
+        loop_fname = None
+    
+    # initialize module class and setup shared memory
+    this_module = RaspyModule(constructor_fname, loop_fname, destructor_fname, signals, module, shm_names)
+    # signals: dict of info for shared memory
+    #   each item is a dictionary with shape and dtype
+    #   e.g. signals['var_name'] = {'shape': (3, 2), 'dtype': 'float64'}
+    # module: dict of info for the relevant module
+    #   Union of module['in'] and module['out'] yields a set of shared memory variable names
+    # shm_pid: used for referencing shared memory objects, and is used as a _suffix. If None, then no suffix is added.
+    #   this implementation uses the parent pid (ppid), assuming it is spawned by main.py->main()
+    
+    # Run constructor, if it exists
+    try:
+        print('before constructor ' + module['name'])
+        this_module.constructor()
+        print('after constructor ' + module['name'])
+    except Exception as e:
+        print(util.color_str(str(e), (255, 0, 0)))
+        raise
+    
+    # Receive the trigger signal from main before signal (if applicable)
+    msg = ''
+    if trigger is not None:
+        if not trigger.poll(timeout):
+            pass # return?
+        else:
+            msg = trigger.recv()
+    
+    i = 0 # Counter of no. of loops completed. Empty cycles count as a loop
+    cycle = module['cycle'] if 'cycle' in module else 1 # Number of cycles to wait from upstream modules for each execution.
+                                                        # 1 means execute on every cycle. 
+                                                        # Caution: Any value other than 1 probably messes with timing.
+    print('before loop', module['name']) # Just to keep track of where we are in execution.
+    if use_loop:
+        while True:
+            try:
+                # Get a message from main via trigger pipe if it's there
+                if trigger is not None:
+                    if trigger.poll(0.):
+                        msg = trigger.recv()
+                    if msg == 'quit_':
+                        raise Exception('quit by trigger')
+                if i > 1:
+                    # Initial loading/first&second loop usually takes a lot longer. Switch to smaller loop timeout here.
+                    timeout = loop_timeout
+                # Poll the upstream pipes.
+                if i > 0 or trigger is None:
+                    for p in p_in:
+                        if not p.poll(timeout):
+                            raise Exception('poll timed out')
+                        else:
+                            # flush the pipe
+                            while p.poll(0.0):
+                                msg = p.recv()
+                                if msg == 'quit_':
+                                    raise Exception('quit by trigger')
+                # Only run the loop every cycle number of loops.
+                if i % cycle == 0:
+                    if not any([p.poll() for p in p_in]):
+                        # Prevents this process from playing catch-up.
+                        # The problem occurs if one loop from this module takes longer than (cycle+1) loops from upstream modules
+                        #   such that this module will always be behind its upstream modules.
+                        # Note: p.poll() should return immediately.
+                        this_module.loop()
+                    else:
+                        print('Warning: module \'{}\' takes too long to execute relative to its upstream modules (& cycle, if applicable).\n'.format(module['name']), end='')
+                # You can initiate a quit from within a module if you create a variable quit_ which evaluates to True.
+                if 'quit_' in this_module._namespace.keys():
+                    if this_module._namespace['quit_']:
+                        raise Exception('quit by variable')
+                # Send a message to the downstream pipes.
+                for p in p_out:
+                    p.send('')
+                i += 1
+            except (Exception, KeyboardInterrupt) as e:
+                e_str = 'Exception: '
+                if str(e) in ['', 'quit', 'poll timed out', 'quit by trigger', 'quit by message', 'quit by variable']:
+                    e_str += str(e)
+                else:
+                    e_str += util.color_str(traceback.format_exc(), (255, 0, 0)) # set the exception color to red.
+                print(util.color_str('!!! ' + module['name'] + ' ' + e_str, (0, 200, 0)) + '\n', end='') # Wrap the printed red exception with green
+                
+                # Tell downstream modules and main module to quit.
+                for p in p_out:
+                    try:
+                        p.send('quit_')
+                    except:
+                        pass
+                if trigger is not None:
+                    trigger.send('quit_')
+                break
+    
+    # Execute the destructor (if applicable)
+    if destructor_fname is not None:
+        print('    Destructing {}\n'.format(module['name']), end='')
+        this_module.destructor() # Execute destructor code
+    this_module.shm_close() # Close this process's access to shared memory
+    
+    print('  Exiting {}\n'.format(module['name']), end='') # Print a status update.
+    return

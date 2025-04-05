@@ -1,0 +1,114 @@
+data_dir: /home/necl-eeg/data/raspy/
+model_dir: /home/necl-eeg/data/raspy/trained_models/
+h5_dir: /home/necl-eeg/data/raspy/preprocessed_data/
+model_arch_dir: ./EEGNet.py
+data_names:
+  - 2024-02-13_H1_CL_1
+data_kinds:
+  - OL
+train_on_server: false
+device_id:
+  - 0
+random_seed: null
+data_preprocessor:
+  eeg_cap_type: gel64
+  sampling_frequency: 1000
+  ch_to_drop:
+    - TRGR
+    - COUNT
+    - M1
+    - M2
+    - EOG
+    - Fp1
+    - Fpz
+    - Fp2
+  online_status: offline
+  normalizer_type: welfords
+  bandpass_filter:
+    apply: false
+    lowcut: 4
+    highcut: 40
+    order: 3
+  zero_center: false
+labeling:
+  labels_to_keep:
+    - all
+  relabel_pairs:
+    - null
+artifact_handling:
+  detect_artifacts: false
+  reject_std: 5.5
+dataset_generator:
+  dataset_operation:
+    relabel: false
+    selected_labels:
+      - 0
+      - 1
+      - 2
+      - 3
+    mapped_labels:
+      class0:
+        - 0
+      class1:
+        - 1
+      class2:
+        - 2
+      class3:
+        - 3
+  first_ms_to_drop: 1000
+  window_length: 1000
+  omit_angles: 10
+partition:
+  num_folds: 5
+augmentation:
+  window_length: 1000
+  stride: 99
+  new_sampling_frequency: 100
+  num_noise: 4
+training:
+  num_folds: 5
+  max_epochs: 500
+  patience: 100
+  mode: max
+  save_top_k: 10
+  save_last: true
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  eps: 0.001
+  loss_func: OneHotMSE
+  class_weight: balanced
+  train_batch_size: 32
+  train_shuffle: true
+  train_drop_last: false
+  train_num_workers: 0
+  train_prefetch_factor: 4
+  val_batch_size: 32
+  val_shuffle: true
+  val_drop_last: false
+  val_num_workers: 0
+  val_prefetch_factor: 4
+model:
+  num_temporal_filters: 8
+  num_spatial_filters: 2
+  window_length: 1000
+  sampling_frequency: 100
+  block1:
+    conv:
+      - 1
+      - 51
+    max_norm_value: 1
+    eps: 0.01
+    avg_pool:
+      - 1
+      - 3
+    dropout: 0.5
+  block2:
+    sep_conv:
+      - 1
+      - 16
+    avg_pool:
+      - 1
+      - 16
+    dropout: 0.5
+    max_norm_value: 0.25
+    eps: 0.01

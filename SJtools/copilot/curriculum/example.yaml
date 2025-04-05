@@ -1,0 +1,17 @@
+target_size: # name of attribute that changes across curriculum
+  start: 0.4
+  end: 0.2
+  step: 0.1 # how much to change this value
+  req_trials: 10 # how many trials needed to jump to next curriculum
+  req_success: 1.0 # average hit rate to maintain 0.9 = 90%
+  # all 5 parameters must be visible
+
+dwell_time:
+  start: 8
+  end: 2
+  step: 1
+  req_trials: 20
+  req_success: 0.9
+
+# available attributes are: target_size, hold_time, dwell_time, CS, wrong_penalty, tolerated_wrong_penalty
+# void: curriculum_learning_target_size sample i.e) 0.4 0.05 10 or 0.4 0.05 10 0.9')

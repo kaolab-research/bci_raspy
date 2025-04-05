@@ -1,0 +1,18 @@
+python -m SJtools.copilot.train -model=PPO -action chargeTargets -action_param temperature 1 -holdtime=2.0 -stillCS=0.0 -timesteps=1200000 -lr_scheduler=constant -n_steps=2048 -softmax_type=normal_target -velReplaceSoftmax -no_wandb -reward_type=baseLinDist.yaml -center_out_back -history 5 20 pos -historyReset last -extra_targets_yaml=dir-8.yaml -policy_param_p 64 64 64 -policy_param_v 64 64 64 -filePath=./SJtools/copilot/runs/24-01-25_charge/ -fileName=T8B_temperature1
+last model with complex softmax: 0.95, 95, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 204.68, 1.57, 2.34
+last model with two_peak softmax: 0.98, 98, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 194.86, 1.37, 2.16
+last model with simple softmax: 0.52, 52, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 276.17, 0.98, 1.49
+last model with normal_target softmax: 0.93, 93, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 219.27, 0.79, 1.57
+best model with complex softmax: 0.98, 98, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 174.60, 1.25, 2.03
+best model with two_peak softmax: 0.98, 98, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 190.36, 1.36, 2.15
+best model with simple softmax: 0.63, 63, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 283.15, 0.99, 1.58
+best model with normal_target softmax: 0.95, 95, 100
+^ time to hit, avg extra distance travelled, avg distance travelled: 215.26, 0.75, 1.53
+python -m SJtools.copilot.train -model=PPO -action chargeTargets -action_param temperature 1 -holdtime=2.0 -stillCS=0.0 -timesteps=1200000 -lr_scheduler=constant -n_steps=2048 -softmax_type=normal_target -velReplaceSoftmax -no_wandb -reward_type=baseLinDist.yaml -center_out_back -history 5 20 pos -historyReset last -extra_targets_yaml=dir-8.yaml -policy_param_p 64 64 64 -policy_param_v 64 64 64 -filePath=./SJtools/copilot/runs/24-01-25_charge/ -fileName=T8B_temperature1

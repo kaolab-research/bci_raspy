@@ -1,0 +1,14 @@
+game_state:
+  T: 0 # time out
+  H: 1000 # hit
+  W: -1000 # wrong hit
+  t: 0
+  lower: 0 # n,h,w
+bonus_param: {}
+#   stall_in_target: 10
+shaping: lin_angle
+reward_weight: # how much to weigh each reward
+  game_state: 1
+#   stall_in_target: 1
+  shaping: 1
+# legacy: True

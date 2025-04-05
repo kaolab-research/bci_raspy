@@ -1,0 +1,29 @@
+ordination_ulcerated_EEGNet_2023-09-19_ABHISHEK_OL_1 # config_2023-09-19_ABHISHEK_OL_1_MSE_8-2_dropfrontal.yaml
+
+The name of this model is: variegated_refine_EEGNet, from config config_2023-09-19_2023-08-15_A2_OL_1_MSE_64-1.yaml
+at model_dir /data/raspy/trained_models/variegated_refine_EEGNet_2023-08-15_A2_OL_1/
+
+
+The name of this model is: ephemeral_swindle_EEGNet, from config config_2023-09-19_2023-02-07_SANGJOONLEE_OL_1_MSE_64-1.yaml
+at model_dir /data/raspy/trained_models/ephemeral_swindle_EEGNet_2023-02-07_SANGJOONLEE_OL_1/
+
+ordination_ulcerated_EEGNet_2023-09-19_ABHISHEK_OL_1 # config_2023-09-19_ABHISHEK_OL_1_MSE_8-2_dropfrontal.yaml
+ethnologist_saxophones_EEGNet_2023-08-15_A2_OL_1 # config_2023-09-19_2023-08-15_A2_OL_1_MSE_64-1.yaml
+mesdemoiselles_smooches_EEGNet, from config config_2023-09-19_ABHISHEK_OL_1_MSE_8-2.yaml
+stabilizers_speedster_EEGNet, from config config_2023-09-19_ABHISHEK_OL_1_MSE_8-2_L500.yaml
+appears_coventries_EEGNet, from config config_2023-09-19_ABHISHEK_OL_1_MSE_64-1.yaml
+cotopaxi_finaglers_EEGNet, from config config_2023-09-19_ABHISHEK_OL_1_MSE_16-2.yaml
+
+
+============================================================
+The name of this model is: portraits_stillborn_EEGNet, from config config_2023-09-19_2023-08-15_A2_OL_1_MSE_8-2.yaml
+at model_dir /data/raspy/trained_models/portraits_stillborn_EEGNet_2023-08-15_A2_OL_1/
+============================================================
+============================================================
+The name of this model is: humorists_ankle_EEGNet, from config config_2023-09-19_2023-08-15_A2_OL_1_MSE_64-1.yaml
+at model_dir /data/raspy/trained_models/humorists_ankle_EEGNet_2023-08-15_A2_OL_1/
+============================================================
+============================================================
+The name of this model is: bumbling_electroencephalographs_EEGNet, from config config_2023-09-19_2023-08-15_A2_OL_1_MSE_16-2.yaml
+at model_dir /data/raspy/trained_models/bumbling_electroencephalographs_EEGNet_2023-08-15_A2_OL_1/
+============================================================

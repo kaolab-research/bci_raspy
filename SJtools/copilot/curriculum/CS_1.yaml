@@ -1,0 +1,9 @@
+CS: # name of attribute that changes across curriculum
+  start: 1.0
+  end: 0.8
+  step: 0.1 # how much to change this value
+  req_trials: 20 # how many trials needed to jump to next curriculum
+  req_success: 1.0 # average hit rate to maintain 0.9 = 90%
+  # all 5 parameters must be visible
+
+# available attributes are: target_size, hold_time, dwell_time, CS

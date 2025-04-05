@@ -1,0 +1,236 @@
+['./main/main2b.py', 'exp/kf-8-directions-gaze', '--data_folder', '{date}_H1_CL_{counter}']
+pid: 101650
+main logger_disk
+  starting logger_disk
+before constructor logger_disk
+opening logger_disk ports
+main timer
+  starting timer
+before constructor timer
+after constructor timer
+main recv_gaze_buffer
+  starting recv_gaze_buffer
+before constructor recv_gaze_buffer
+IP: 10.0.1.44
+after constructor recv_gaze_buffer
+before loop recv_gaze_buffer
+main UpdateEEG
+  starting UpdateEEG
+before constructor UpdateEEG
+##################################################
+INITIALIZING EEG...
+EEG socket ready!
+after constructor UpdateEEG
+before loop UpdateEEG
+main filterEEG
+  starting filterEEG
+before constructor filterEEG
+main decoder_hidden
+main kf_clda
+main SJ_4_directions
+  starting decoder_hidden
+before constructor decoder_hidden
+  starting kf_clda
+main logger
+before constructor kf_clda
+warning: refit_mode 'split'
+Warning: using initial EBS of 3489.099891504375 corresponding to 180.0 seconds
+warning: continuous update OFF
+warning: continuous update is still OFF
+  starting kf_4_directions
+before loop timer
+trigger logger_disk
+trigger timer
+Kalman Filter model loaded!
+M1 M2 updated!
+warning: queue_length 0
+after constructor kf_clda
+before loop kf_clda
+before constructor kf_4_directions
+  starting logger
+before constructor logger
+  task dtype <i8,|i1,<f4,<f4,<f4,<f4,|i1,<f4,<f4,|i1,|b1,|b1,<f4,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f4,<f4,<f4,<f4,<f4,|b1,|b1,<f4,|i1,<f4,<f4,<f4,<f4,<f4,<f4,<f4,<f4,<i4,|i1,<i4,<i4,<i8$(1,),(1,),(5,),(2,),(2,),(2,),(1,),(7,),(7,),(1,),(1,),(1,),(16,),(7, 7),(16, 7),(16, 16),(16, 16),(1,),(16, 7),(16, 16),(16, 16),(7, 7),(7, 16),(7, 7),(7, 16),(2,),(4,),(1,),(1,),(2,),(1,),(1,),(1,),(2,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(),(),(),13238 bytes
+  task labels timer_tick_time_ns,state_task,decoder_output,decoded_pos,target_pos,target_size,game_state,kf_state,kf_inf_state,kf_update_flag,allow_kf_adapt,allow_kf_sync,decoder_h,kf_R,kf_S,kf_T,kf_Tinv,kf_EBS,kf_C,kf_Q,kf_Qinv,kf_S_k,kf_K_k,kf_M1,kf_M2,kf_effective_vel,kf_ole_rlud,sessionLength,activeLength,cursorVel,ignoreWrongTarget,cursorMoveInCorretDirectionOnly,assistValue,assistMode,softmaxThres,holdTimeThres,kfCopilotAlpha,hitRate,missRate,timeoutRate,trialCount,render_angle,numCompletedBlocks,enableKfSyncInternal,eeg_step,gaze_step,time_ns
+  eeg dtype <f4,<f4,<i4,<i4,<i8$(66,),(66,),(),(),(),544 bytes
+  eeg labels eegbuffersignal,databuffer,task_step,gaze_step,time_ns
+  gaze dtype <f8,<i4,<i4,<i8$(32,),(),(),(),272 bytes
+  gaze labels gaze_buffer,task_step,eeg_step,time_ns
+pygame 2.5.1 (SDL 2.28.2, Python 3.8.18)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+after constructor filterEEG
+before loop filterEEG
+    attempting to connect to: local task
+task  len header  999
+    successfully connected to: task
+    attempting to connect to: local eeg
+eeg  len header  100
+    successfully connected to: eeg
+    attempting to connect to: local gaze
+gaze  len header  75
+    successfully connected to: gaze
+logger constructor end
+after constructor logger
+before loop logger
+EEGNet with output dim 4
+after constructor decoder_hidden
+before loop decoder_hidden
+is a PPO model
+after constructor kf_4_directions
+before loop kf_4_directions
+Gaze connection established!
+EEG connection established!
+Warning: timing violation on tick # 111 by 0.08090972900390625 seconds
+numCompletedBlocks incremented
+warning: bucket empty
+warning: updated self.yaml_data
+numCompletedBlocks incremented
+warning: set self.enableKfSyncInternal to True
+warning: bucket empty
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+numCompletedBlocks incremented
+warning: bucket empty
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+numCompletedBlocks incremented
+warning: bucket empty
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+M1 M2 updated!
+numCompletedBlocks incremented
+warning: bucket empty
+warning: enableKfSyncInternal set to false
+M1 M2 updated!
+numCompletedBlocks incremented
+warning: bucket empty
+warning: enableKfSyncInternal set to false
+numCompletedBlocks incremented
+warning: bucket empty
+warning: enableKfSyncInternal set to false
+numCompletedBlocks incremented
+warning: bucket empty
+warning: enableKfSyncInternal set to false
+!!! kf_4_directions Exception: 
+!!! logger Exception: quit by message
+!!! timer Exception: quit by message
+!!! recv_gaze_buffer Exception: quit by message
+    Destructing recv_gaze_buffer
+    Destructing logger
+!!! UpdateEEG Exception: quit by message
+!!! filterEEG Exception: quit by message
+    Destructing timer
+  Exiting recv_gaze_buffer
+  Exiting filterEEG
+    Destructing UpdateEEG
+timer exiting: 1 total timing violations
+  Exiting timer
+  Exiting UpdateEEG
+  Exiting logger
+    Destructing kf_4_directions
+BEGIN README CONTENTS
+session                          : 2024-02-13_H1_CL_2
+sessionLength (minutes)          : 10.0
+actual session time (seconds)    : 609.7969136238098
+actual session time (minutes)    : 10.163281893730163
+Task                             : 2D center out 8
+Target info                      : [array([-0.700, 0.000]), array([0.600, 0.600])]
+Decoder path                     : /home/necl-eeg/data/raspy/trained_models/CL_H1
+Decoder fold                     : 0
+kf_init_path                     : /home/necl-eeg/data/raspy/trained_models/CL_H1/0_kf.npz
+Number of hits                   : 110
+trialCount                       : 112
+hitRate/trialCount               : 0.9821428571428571
+trials/minute*(10 minutes)       : 113.93752399806924
+Index of difficulty              : 1.1154772174199359
+Out hit, incorrect, timeout      : 54, 0, 2
+Out time                         : 302.8899157047272
+kfCopilotAlpha (1.0: no copilot) : 1.0
+
+Additional Notes:
+
+END README CONTENTS
+  Exiting kf_4_directions
+logger_disk Exception: client closed connection
+####logger_disk: saved to /home/necl-eeg/data/raspy/2024-02-13_H1_CL_2/
+    task : 162881351 bytes ,header_len 999 ,
+header:
+task
+timer_tick_time_ns,state_task,decoder_output,decoded_pos,target_pos,target_size,game_state,kf_state,kf_inf_state,kf_update_flag,allow_kf_adapt,allow_kf_sync,decoder_h,kf_R,kf_S,kf_T,kf_Tinv,kf_EBS,kf_C,kf_Q,kf_Qinv,kf_S_k,kf_K_k,kf_M1,kf_M2,kf_effective_vel,kf_ole_rlud,sessionLength,activeLength,cursorVel,ignoreWrongTarget,cursorMoveInCorretDirectionOnly,assistValue,assistMode,softmaxThres,holdTimeThres,kfCopilotAlpha,hitRate,missRate,timeoutRate,trialCount,render_angle,numCompletedBlocks,enableKfSyncInternal,eeg_step,gaze_step,time_ns
+<i8,|i1,<f4,<f4,<f4,<f4,|i1,<f4,<f4,|i1,|b1,|b1,<f4,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f8,<f4,<f4,<f4,<f4,<f4,|b1,|b1,<f4,|i1,<f4,<f4,<f4,<f4,<f4,<f4,<f4,<f4,<i4,|i1,<i4,<i4,<i8$(1,),(1,),(5,),(2,),(2,),(2,),(1,),(7,),(7,),(1,),(1,),(1,),(16,),(7, 7),(16, 7),(16, 16),(16, 16),(1,),(16, 7),(16, 16),(16, 16),(7, 7),(7, 16),(7, 7),(7, 16),(2,),(4,),(1,),(1,),(2,),(1,),(1,),(1,),(2,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(1,),(),(),()
+
+    eeg : 331729668 bytes ,header_len 100 ,
+header:
+eeg
+eegbuffersignal,databuffer,task_step,gaze_step,time_ns
+<f4,<f4,<i4,<i4,<i8$(66,),(66,),(),(),()
+
+    gaze : 9990907 bytes ,header_len 75 ,
+header:
+gaze
+gaze_buffer,task_step,eeg_step,time_ns
+<f8,<i4,<i4,<i8$(32,),(),(),()
+
+after constructor logger_disk
+before loop logger_disk
+  Exiting logger_disk
+!!! decoder_hidden Exception: quit by message
+!!! kf_clda Exception: quit by message
+    Destructing kf_clda
+  Exiting kf_clda
+  Exiting decoder_hidden
+main: timer triggered quit
+!!! main Exception: someone quit
+sending trigger quit for: logger_disk
+sending trigger quit for: timer
+Begin termination of modules:
+    Joined: logger_disk
+    Joined: timer
+    Joined: recv_gaze_buffer
+    Joined: UpdateEEG
+    Joined: filterEEG
+    Joined: decoder_hidden
+    Joined: kf_clda
+    Joined: SJ_4_directions
+    Joined: logger
+  Exiting main

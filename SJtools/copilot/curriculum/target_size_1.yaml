@@ -1,0 +1,6 @@
+target_size: # name of attribute that changes across curriculum
+  start: 0.4
+  end: 0.2
+  step: 0.1 # how much to change this value
+  req_trials: 10 # how many trials needed to jump to next curriculum
+  req_success: 1.0 # average hit rate to maintain 0.9 = 90%

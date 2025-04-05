@@ -1,0 +1,37 @@
+action_dim:
+  action:
+  - vx
+  - vy
+  - alpha
+  alpha: 1.0
+copilot:
+  model: PPO
+  net_arch:
+  - pi:
+    - 64
+    - 64
+    vf:
+    - 64
+    - 64
+  policy: null
+obs_dim:
+  cursor_target_obs: false
+  heatmap: 10
+  history:
+  - 3
+  - 10
+  maskSoftmax: null
+  obs:
+  - hold
+  - vel
+  - acc
+  - time
+  obs_heatmap_option:
+  - bcc
+  - com
+  - df0.99
+  target_predictor: null
+  target_predictor_input: softmax
+targets:
+  extra_targets: {}
+  extra_targets_yaml: null

@@ -1,0 +1,18 @@
+game_state:
+  T: -1 # time out
+  H: -1 # hit
+  W: -1 # wrong hit
+  t: -1
+  lower: -1 # n,h,w
+bonus_param: {}
+#   stall_in_target: 10
+#   closer_to_center: 1
+#   closer_to_center_clip: 0.0001
+shaping: lin_dist
+reward_weight: # how much to weigh each reward
+  # game_state: 1
+#   stall_in_target: 1
+#   closer_to_center: 1
+  shaping: 1
+# legacy: True
+
